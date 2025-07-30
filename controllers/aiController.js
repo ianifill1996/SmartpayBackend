@@ -48,7 +48,10 @@ export const detectPaymentIntent = async (req, res) => {
       });
     }
 
-    res.status(200).json({ parsed });
+    res.status(200).json({ 
+      reason: parsed.reaos,
+      category: parsed.category
+     });
 
   } catch (error) {
     console.error('AI error:', error.response?.data || error.message);
