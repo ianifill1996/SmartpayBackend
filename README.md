@@ -47,10 +47,10 @@ SmartPay is a secure, AI-assisted payment system backend built using the **MERN 
    git clone https://github.com/ianifill1996/SmartpayBackend.git
    cd SmartpayBackend
 
-2. **Install dependencies
+2. **Install dependencies**
 npm install
 
-3. **Set up your .env file
+3. **Set up your .env file**
 Create a .env file in the root directory and add:
 NODE_ENV=development
 PORT=5001
@@ -58,7 +58,7 @@ MONGO_URI=your_mongo_db_connection
 JWT_SECRET=your_jwt_secret
 OPENAI_API_KEY=your_openai_api_key
 
-4. **Start the server
+4. **Start the server**
 npm run dev
 The server should run on http://localhost:5001.
 
