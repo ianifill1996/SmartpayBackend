@@ -62,7 +62,7 @@ OPENAI_API_KEY=your_openai_api_key
 npm run dev
 The server should run on http://localhost:5001.
 
-##Folder Structure
+## Folder Structure
 
 SmartpayBackend/
 ├── config/
@@ -85,10 +85,10 @@ SmartpayBackend/
 ├── server.js
 └── package.json
 
-##Deployment
+## Deployment
 You can deploy this backend using services such as Render, Railway, or Heroku. Be sure to update your environment variables in the hosting platform.
 
-##Future Improvements
+## Future Improvements
 Admin dashboard for managing all users and transactions
 
 Notification system for flagged or suspicious payments
