@@ -62,16 +62,22 @@ export const updatePayment = async (req, res) => {
 // @route   DELETE /api/payments/:id
 // @access  Private
 export const deletePayment = async (req, res) => {
-  const payment = await Payment.findById(req.params.id);
+  try {
+    const payment = await Payment.findById(req.params.id);
 
-  if (!payment) {
-    return res.status(404).json({ message: 'Payment not found' });
+    if (!payment) {
+      return res.status(404).json({ message: "Payment not found" });
+    }
+
+    if (payment.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    await Payment.deleteOne({ _id: payment._id }); 
+
+    res.json({ message: "Payment deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
-
-  if (payment.user.toString() !== req.user._id.toString()) {
-    return res.status(401).json({ message: 'Not authorized to delete this payment' });
-  }
-
-  await payment.remove();
-  res.json({ message: 'Payment removed' });
 };
