@@ -6,6 +6,7 @@ const paymentSchema = new mongoose.Schema({
   method: { type: String, required: true },
   reason: { type: String },
   category: { type: String },
+  date: {type: Date, default: Date.now},
 }, { timestamps: true });
 
 const Payment = mongoose.model('Payment', paymentSchema);

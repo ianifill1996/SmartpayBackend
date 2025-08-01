@@ -4,7 +4,7 @@ import Payment from '../models/Payment.js';
 // @route   POST /api/payments
 // @access  Private
 export const createPayment = async (req, res) => {
-  const { amount, method, description, category } = req.body;
+  const { amount, method, description, category, date } = req.body;
 
   const payment = await Payment.create({
     user: req.user._id,
@@ -12,6 +12,7 @@ export const createPayment = async (req, res) => {
     method,
     description,
     category,
+    date: date ? new Date(date) : new Date(), // use provided date or default to today
   });
 
   res.status(201).json(payment);
@@ -47,12 +48,13 @@ export const updatePayment = async (req, res) => {
     return res.status(401).json({ message: 'Not authorized to update this payment' });
   }
 
-  const { amount, description, method, category } = req.body;
+  const { amount, description, method, category, date } = req.body;
 
   if (amount !== undefined) payment.amount = amount;
   if (description !== undefined) payment.description = description;
   if (method !== undefined) payment.method = method;
   if (category !== undefined) payment.category = category;
+  if (date !== undefined) payment.date = new Date(date);
 
   const updated = await payment.save();
   res.json(updated);
