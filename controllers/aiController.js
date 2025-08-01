@@ -1,9 +1,8 @@
-const axios = require('axios');
-const dotenv = require('dotenv');
-const { Configuration, OpenAIApi } = require('openai');
+import axios from 'axios';
+import dotenv from 'dotenv';
+import { Configuration, OpenAIApi } from 'openai';
 
 dotenv.config();
-
 
 // OpenAI SDK setup
 const config = new Configuration({
