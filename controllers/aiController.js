@@ -1,14 +1,13 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
-import { OpenAIApi } from 'openai';
+import OpenAI  from 'openai';
 
 dotenv.config();
 
 // OpenAI SDK setup
-const config = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(config);
 
 // @desc    Detect payment reason and category from description
 // @route   POST /api/ai/intent
