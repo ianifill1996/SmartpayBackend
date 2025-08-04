@@ -84,38 +84,71 @@ export const parseReceiptAI = async (req, res) => {
     return res.status(400).json({ message: "No receipt text provided" });
   }
 
-  try {
-    const prompt = `Extract the following from this receipt text:
-- Total amount spent
-- Payment method (cash, card, credit, etc)
-- Purchase category (like food, transport, clothing)
+  const prompt = `
+You are an AI receipt parser.
 
-Format the result as a JSON object like:
-{ "amount": 12.99, "method": "card", "category": "food" }
+Extract the following fields from the raw receipt text below:
+- store_name
+- date
+- amount (total spent)
+- tax (if available)
+- payment_method (cash, card, credit, etc)
+- card_last4 (if available)
+- items: list of { name, quantity (if present), price }
 
-Receipt text:
+Return the result as a JSON object. If a field is not found, use null.
+
+Example input:
+"Target
+Date: 06/15/2024
+Items:
+Milk - $3.49
+Eggs - $2.99
+Total: $6.48
+Paid with Visa **** 1234"
+
+Should return:
+{
+  "store_name": "Target",
+  "date": "2024-06-15",
+  "amount": 6.48,
+  "tax": null,
+  "payment_method": "Visa",
+  "card_last4": "1234",
+  "items": [
+    { "name": "Milk", "quantity": 1, "price": 3.49 },
+    { "name": "Eggs", "quantity": 1, "price": 2.99 }
+  ]
+}
+
+Now extract from this receipt:
 """ 
 ${rawText}
 """`;
 
-    const { data } = await openai.createChatCompletion({
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0,
-    });
+  try {
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    const content = data.choices[0].message.content.trim();
+    const reply = response.data.choices[0].message.content.trim();
+    console.log("AI raw reply:", reply);
 
-    let result;
-    try {
-      result = JSON.parse(content);
-    } catch (err) {
-      return res.status(422).json({ message: "Could not parse AI response", raw: content });
-    }
-
-    res.json(result);
+    const parsed = JSON.parse(reply);
+    res.status(200).json(parsed);
   } catch (err) {
-    console.error(err);
+    console.error("AI receipt parse error:", err.response?.data || err.message, err.stack);
     res.status(500).json({ message: "AI receipt parsing failed" });
   }
 };
